@@ -1,5 +1,5 @@
 /**
- * @file Exercice3_2.cpp
+ * @file Exercice3_3.cpp
  * @author Juilliard Quentin (quentin.juilliard2@alumni.univ-avignon.fr)
  * @brief 
  * @version 0.1
@@ -10,11 +10,17 @@
  */
 #include <iostream>
 #include <thread>
+#include <mutex>
 
 using namespace std;
 
 const int SIZE = 100;
 int T[SIZE];
+
+int SUM = 0;
+
+mutex m;
+
 
 void printTab()
 {
@@ -38,6 +44,7 @@ void initTab()
 
 void sumTab()
 {
+
     int res = 0;
 
     for (int i = 0; i < SIZE; i++)
@@ -48,7 +55,7 @@ void sumTab()
     cout << "Sum of tab : " << res << endl;
 }
 
-void sumThread(int start, int subdivision, int* tabResultat)
+void sumThread(int start, int subdivision)
 {
     int res = 0, stop = start + subdivision;
 
@@ -57,7 +64,10 @@ void sumThread(int start, int subdivision, int* tabResultat)
         res += T[i];
     }
 
-    tabResultat[start / subdivision] = res;
+    m.lock();
+    SUM += res;
+    m.unlock();
+
 
     cout << "=> Start : " << start << " Stop : " << stop << "Sum of subdivision : " << res << endl;
 }
@@ -67,8 +77,6 @@ int main(int ac, char** av)
     int subdivision = SIZE / 4, start;
     cout << "Subdivision : " << subdivision << endl;
 
-    int tabResultat[4];
-
     initTab();
 
     thread threads[4];
@@ -76,7 +84,7 @@ int main(int ac, char** av)
     for (int i = 0; i < 4; i++)
     {
         start = i * subdivision;
-        threads[i] = thread(sumThread, start, subdivision, tabResultat);
+        threads[i] = thread(sumThread, start, subdivision);
     }
 
     for (int i = 0; i < 4; i++)
@@ -84,13 +92,8 @@ int main(int ac, char** av)
         threads[i].join();
     }
 
-    int totalSum = 0;
-    for (int i = 0; i < 4; i++)
-    {
-        totalSum += tabResultat[i];
-    }
 
-    cout << "Total Sum with Thread : " << totalSum << endl;
+    cout << "Total Sum with Thread : " << SUM << endl;
 
     sumTab();
 }
