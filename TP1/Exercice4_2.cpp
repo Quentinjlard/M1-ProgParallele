@@ -14,39 +14,42 @@
 
 using namespace std;
 
-mutex m1, m2;
-
+mutex mtx;
 const int MAX = 1000;
 int courant = 0;
 
 void TPaire()
 {
-    
-    for (int courant = 0; courant < MAX; courant++)
+    for (int i = 0; i <= MAX; i += 2)
     {
-        m1.lock();
-        if (courant % 2 == 0)
+        unique_lock<mutex> lock(mtx);
+        while (courant % 2 != 0)
         {
-            cout << "Thread Paire : " << courant << endl;
+            lock.unlock();
+            this_thread::yield();
+            lock.lock();
         }
-        m1.unlock();
+
+        cout << "Thread Paire : " << courant << endl;
+        courant++;
     }
-    
 }
 
 void TImpaire()
 {
-    
-    for (int courant = 0; courant < MAX; courant++)
+    for (int i = 1; i <= MAX; i += 2)
     {
-        m2.lock();
-        if (courant % 2 != 0)
+        unique_lock<mutex> lock(mtx);
+        while (courant % 2 != 1)
         {
-            cout << "Thread Impaire : " << courant << endl;
+            lock.unlock();
+            this_thread::yield();
+            lock.lock();
         }
-        m2.unlock();
+
+        cout << "Thread Impaire : " << courant << endl;
+        courant++;
     }
-    
 }
 
 int main()

@@ -38,7 +38,7 @@ class Matrice
             {
                 for (int j = 0; j < colomns; j++)
                 {
-                    matrice[i][j] = 1 + rand() % (10+ 1 - 1);
+                    matrice[i][j] = 1 + rand() % (3+ 1 - 1);
                 }
                 
             }
@@ -114,11 +114,11 @@ class Matrice
 
 int main(int ac, char** av)
 {
-    Matrice A(2,3);
+    Matrice A(3,4);
     cout << "=> Matrice A " <<endl;
     A.printMatrice();
 
-    Matrice B(3,2   );
+    Matrice B(4,3);
     cout << "=> Matrice B " <<endl;
     B.printMatrice();
 
