@@ -22,16 +22,16 @@ void TPaire()
 {
     for (int i = 0; i <= MAX; i += 2)
     {
-        unique_lock<mutex> lock(mtx);
+        mtx.lock();
         while (courant % 2 != 0)
         {
-            lock.unlock();
-            this_thread::yield();
-            lock.lock();
+            mtx.unlock();
+            mtx.lock();
         }
 
         cout << "Thread Paire : " << courant << endl;
         courant++;
+        mtx.unlock();
     }
 }
 
@@ -39,16 +39,16 @@ void TImpaire()
 {
     for (int i = 1; i <= MAX; i += 2)
     {
-        unique_lock<mutex> lock(mtx);
+        mtx.lock();
         while (courant % 2 != 1)
         {
-            lock.unlock();
-            this_thread::yield();
-            lock.lock();
+            mtx.unlock();
+            mtx.lock();
         }
 
         cout << "Thread Impaire : " << courant << endl;
         courant++;
+        mtx.unlock();
     }
 }
 
